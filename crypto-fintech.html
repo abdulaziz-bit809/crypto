@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ApexCrypto - FinTech & Crypto Analytics</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    :root {
+      --bg: #f3f4f6;
+      --card-bg: rgba(255, 255, 255, 0.85);
+      --card-border: rgba(229, 231, 235, 0.8);
+      --text: #1f2937;
+      --text-muted: #6b7280;
+      --primary: #7c3aed;
+      --primary-light: #eed9ff;
+      --accent: #10b981;
+      --danger: #ef4444;
+      --shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.01);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', system-ui, sans-serif; }
+
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      /* Soft Light Pastel Mesh Background */
+      background-image: 
+        radial-gradient(at 10% 20%, rgba(124, 58, 237, 0.12) 0px, transparent 50%),
+        radial-gradient(at 90% 10%, rgba(16, 185, 129, 0.12) 0px, transparent 50%),
+        radial-gradient(at 50% 80%, rgba(59, 130, 246, 0.1) 0px, transparent 50%);
+      background-attachment: fixed;
+    }
+
+    /* Header */
+    header {
+      background: rgba(255, 255, 255, 0.75);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--card-border);
+      padding: 1rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .logo {
+      font-size: 1.4rem;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      color: var(--text);
+      cursor: pointer;
+    }
+    .logo i { color: var(--primary); }
+
+    /* Navigation Tabs */
+    .nav-tabs {
+      display: flex;
+      gap: 0.5rem;
+      background: rgba(243, 244, 246, 0.8);
+      padding: 0.3rem;
+      border-radius: 30px;
+      border: 1px solid var(--card-border);
+    }
+
+    .tab-btn {
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      padding: 0.6rem 1.2rem;
+      border-radius: 20px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-size: 0.9rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .tab-btn:hover { color: var(--text); }
+    .tab-btn.active {
+      background: #ffffff;
+      color: var(--primary);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    }
+
+    .user-profile {
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+      background: #fff;
+      padding: 0.4rem 0.8rem;
+      border-radius: 20px;
+      border: 1px solid var(--card-border);
+      box-shadow: var(--shadow);
+    }
+
+    /* Container & Page Sections */
+    .container {
+      max-width: 1100px;
+      margin: 2rem auto;
+      padding: 0 1.5rem;
+      flex: 1;
+      width: 100%;
+    }
+
+    .page-section {
+      display: none;
+      animation: fadeIn 0.3s ease-in-out;
+    }
+
+    .page-section.active {
+      display: block;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Cards */
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 20px;
+      padding: 1.5rem;
+      backdrop-filter: blur(12px);
+      box-shadow: var(--shadow);
+      margin-bottom: 1.5rem;
+    }
+
+    /* Dashboard Stats Grid */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 1.2rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .stat-card {
+      background: #ffffff;
+      border: 1px solid var(--card-border);
+      border-radius: 18px;
+      padding: 1.2rem;
+      box-shadow: var(--shadow);
+    }
+
+    .badge-green { background: rgba(16, 185, 129, 0.1); color: var(--accent); padding: 0.2rem 0.6rem; border-radius: 10px; font-weight: 700; font-size: 0.8rem; }
+    .badge-red { background: rgba(239, 68, 68, 0.1); color: var(--danger); padding: 0.2rem 0.6rem; border-radius: 10px; font-weight: 700; font-size: 0.8rem; }
+
+    /* Swap Simulator */
+    .swap-box {
+      max-width: 450px;
+      margin: 0 auto;
+      background: #ffffff;
+      border: 1px solid var(--card-border);
+      border-radius: 24px;
+      padding: 2rem;
+      box-shadow: var(--shadow);
+    }
+
+    .swap-input-group {
+      background: var(--bg);
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      padding: 1rem;
+      margin-bottom: 1rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .swap-input-group input {
+      border: none;
+      background: transparent;
+      font-size: 1.4rem;
+      font-weight: 700;
+      width: 60%;
+      outline: none;
+      color: var(--text);
+    }
+
+    .swap-select {
+      border: none;
+      background: #ffffff;
+      padding: 0.5rem 0.8rem;
+      border-radius: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+    }
+
+    .btn {
+      width: 100%;
+      background: linear-gradient(135deg, var(--primary), #6366f1);
+      color: #fff;
+      border: none;
+      padding: 0.9rem;
+      border-radius: 16px;
+      font-weight: 700;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+    .btn:hover { opacity: 0.95; transform: translateY(-2px); }
+
+    /* Tables */
+    table { width: 100%; border-collapse: collapse; margin-top: 1rem; }
+    th, td { padding: 1rem; text-align: left; border-bottom: 1px solid var(--card-border); }
+    th { color: var(--text-muted); font-size: 0.85rem; text-transform: uppercase; }
+
+    footer {
+      text-align: center;
+      padding: 1.5rem;
+      color: var(--text-muted);
+      font-size: 0.85rem;
+      border-top: 1px solid var(--card-border);
+      background: rgba(255,255,255,0.5);
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="logo" onclick="switchPage('dashboard')"><i class="fa-solid fa-chart-line"></i> ApexCrypto</div>
+    
+    <!-- Navigation Tabs -->
+    <div class="nav-tabs">
+      <button class="tab-btn active" onclick="switchPage('dashboard')"><i class="fa-solid fa-house"></i> Dashboard</button>
+      <button class="tab-btn" onclick="switchPage('swap')"><i class="fa-solid fa-arrow-right-arrow-left"></i> Swap (Almashtirish)</button>
+      <button class="tab-btn" onclick="switchPage('analytics')"><i class="fa-solid fa-chart-pie"></i> Tahlil</button>
+      <button class="tab-btn" onclick="switchPage('wallet')"><i class="fa-solid fa-wallet"></i> Hamyon</button>
+    </div>
+
+    <div class="user-profile">
+      <i class="fa-solid fa-user-circle" style="font-size:1.4rem; color:var(--primary);"></i>
+      <span style="font-size:0.9rem; font-weight:700;">Admin</span>
+    </div>
+  </header>
+
+  <div class="container">
+
+    <!-- PAGE 1: DASHBOARD -->
+    <section id="dashboard" class="page-section active">
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div style="color:var(--text-muted); font-size:0.85rem; font-weight:600;">Umumiy Balans</div>
+          <div style="font-size:1.8rem; font-weight:800; margin:0.3rem 0;">$24,850.40</div>
+          <span class="badge-green"><i class="fa-solid fa-arrow-up"></i> +8.4% bugun</span>
+        </div>
+        <div class="stat-card">
+          <div style="color:var(--text-muted); font-size:0.85rem; font-weight:600;">Bitcoin (BTC)</div>
+          <div style="font-size:1.8rem; font-weight:800; margin:0.3rem 0;">$64,320.00</div>
+          <span class="badge-green"><i class="fa-solid fa-arrow-up"></i> +3.2%</span>
+        </div>
+        <div class="stat-card">
+          <div style="color:var(--text-muted); font-size:0.85rem; font-weight:600;">Ethereum (ETH)</div>
+          <div style="font-size:1.8rem; font-weight:800; margin:0.3rem 0;">$3,450.10</div>
+          <span class="badge-red"><i class="fa-solid fa-arrow-down"></i> -1.1%</span>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3 style="margin-bottom:1rem;">Bozor Kurslari va Aktivlar</h3>
+        <table>
+          <thead>
+            <tr>
+              <th>Valyuta</th>
+              <th>Narx</th>
+              <th>24soat O'zgarish</th>
+              <th>Bozor Kapitali</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><b>Bitcoin (BTC)</b></td>
+              <td>$64,320.00</td>
+              <td><span class="badge-green">+3.2%</span></td>
+              <td>$1.26 Trillion</td>
+            </tr>
+            <tr>
+              <td><b>Ethereum (ETH)</b></td>
+              <td>$3,450.10</td>
+              <td><span class="badge-red">-1.1%</span></td>
+              <td>$415 Billion</td>
+            </tr>
+            <tr>
+              <td><b>Tether (USDT)</b></td>
+              <td>$1.00</td>
+              <td><span class="badge-green">0.0%</span></td>
+              <td>$110 Billion</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- PAGE 2: SWAP SIMULATOR -->
+    <section id="swap" class="page-section">
+      <div class="swap-box">
+        <h3 style="text-align:center; margin-bottom:1.5rem;"><i class="fa-solid fa-rotate" style="color:var(--primary);"></i> Kripto Almashtirish</h3>
+        
+        <div class="swap-input-group">
+          <div>
+            <div style="font-size:0.75rem; color:var(--text-muted);">Siz berasiz:</div>
+            <input type="number" id="fromAmount" value="1000" oninput="calculateSwap()">
+          </div>
+          <select id="fromCurrency" class="swap-select" onchange="calculateSwap()">
+            <option value="USDT">USDT</option>
+            <option value="BTC">BTC</option>
+          </select>
+        </div>
+
+        <div style="text-align:center; margin:-0.5rem 0 0.5rem; color:var(--primary);">
+          <i class="fa-solid fa-circle-arrow-down" style="font-size:1.4rem;"></i>
+        </div>
+
+        <div class="swap-input-group">
+          <div>
+            <div style="font-size:0.75rem; color:var(--text-muted);">Siz olasiz (Taxminan):</div>
+            <input type="text" id="toAmount" value="0.0155" readonly>
+          </div>
+          <select id="toCurrency" class="swap-select" onchange="calculateSwap()">
+            <option value="BTC">BTC</option>
+            <option value="USDT">USDT</option>
+          </select>
+        </div>
+
+        <button class="btn" onclick="alert('Almashtirish muvaffaqiyatli amalga oshirildi!')">Swap Qilish</button>
+      </div>
+    </section>
+
+    <!-- PAGE 3: ANALYTICS CHART -->
+    <section id="analytics" class="page-section">
+      <div class="card">
+        <h3 style="margin-bottom:1rem;">BTC/USD Narx Trendi (2026)</h3>
+        <canvas id="cryptoChart" style="max-height: 350px;"></canvas>
+      </div>
+    </section>
+
+    <!-- PAGE 4: WALLET -->
+    <section id="wallet" class="page-section">
+      <div class="card">
+        <h3>Mening Hamyonim</h3>
+        <p style="color:var(--text-muted); margin-bottom:1rem;">Ushbu hisobga biriktirilgan raqamli hamyonlar:</p>
+        
+        <div style="display:flex; gap:1rem; flex-wrap:wrap;">
+          <div style="background:#f9fafb; border:1px solid var(--card-border); padding:1rem; border-radius:14px; flex:1; min-width:200px;">
+            <div style="color:var(--text-muted); font-size:0.8rem;">USDT Hamyon</div>
+            <div style="font-weight:800; font-size:1.3rem;">12,450.00 USDT</div>
+          </div>
+          <div style="background:#f9fafb; border:1px solid var(--card-border); padding:1rem; border-radius:14px; flex:1; min-width:200px;">
+            <div style="color:var(--text-muted); font-size:0.8rem;">BTC Hamyon</div>
+            <div style="font-weight:800; font-size:1.3rem;">0.192 BTC</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </div>
+
+  <footer>
+    <p>&copy; 2026 ApexCrypto FinTech Analytics. Barcha huquqlar saqlangan.</p>
+  </footer>
+
+  <script>
+    // Tab switching
+    function switchPage(pageId) {
+      document.querySelectorAll('.page-section').forEach(sec => sec.classList.remove('active'));
+      document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+
+      document.getElementById(pageId).classList.add('active');
+      const activeBtn = Array.from(document.querySelectorAll('.tab-btn')).find(b => b.getAttribute('onclick').includes(pageId));
+      if(activeBtn) activeBtn.classList.add('active');
+
+      if(pageId === 'analytics') initChart();
+    }
+
+    // Swap calculation logic
+    function calculateSwap() {
+      const amount = parseFloat(document.getElementById('fromAmount').value) || 0;
+      const fromCurr = document.getElementById('fromCurrency').value;
+      const toCurr = document.getElementById('toCurrency').value;
+      const btcRate = 64320;
+
+      let result = 0;
+      if(fromCurr === 'USDT' && toCurr === 'BTC') result = amount / btcRate;
+      else if(fromCurr === 'BTC' && toCurr === 'USDT') result = amount * btcRate;
+      else result = amount;
+
+      document.getElementById('toAmount').value = result.toFixed(6);
+    }
+
+    // Chart.js initialization
+    let chartInstance = null;
+    function initChart() {
+      if(chartInstance) return;
+      const ctx = document.getElementById('cryptoChart').getContext('2d');
+      chartInstance = new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: ['Yan', 'Fev', 'Mar', 'Apr', 'May', 'Iyun', 'Iyul'],
+          datasets: [{
+            label: 'BTC Narxi ($)',
+            data: [52000, 58000, 61000, 59000, 63000, 62500, 64320],
+            borderColor: '#7c3aed',
+            backgroundColor: 'rgba(124, 58, 237, 0.1)',
+            fill: true,
+            tension: 0.4
+          }]
+        },
+        options: { responsive: true, maintainAspectRatio: false }
+      });
+    }
+  </script>
+</body>
+</html>
